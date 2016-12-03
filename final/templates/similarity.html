@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+    <div class="jumbotron">
+    <center><h2>Оценка схожести двух текстов</h2></center>
+    <br><br>
+        <div class="row vertical-align">
+            <div class="col-md-6">
+                <center>Выберите текстовые файлы:</center>
+                <br>
+                <form action="{% url 'similarity' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label class="btn btn-primary btn-block" for="my-file-selector1">Загрузить файл №1</label>
+                    <input id="my-file-selector1" type="file" accept="text/plain" name="file1" style="display:none;"
+                           onchange="$('#upload-file-info1').html($(this).val().split('\\').slice(-1)[0]);" required/>
+                    <center>
+                        <br>
+                    <span class='label label-info' id="upload-file-info1"></span>
+                    </center>
+                    <br>
+                    <label class="btn btn-primary btn-block" for="my-file-selector2">Загрузить файл №2</label>
+                    <input id="my-file-selector2" type="file" accept="text/plain" name="file2" style="display:none;"
+                           onchange="$('#upload-file-info2').html($(this).val().split('\\').slice(-1)[0]);" required/>
+                    <br>
+                    <center>
+                    <span class='label label-info' id="upload-file-info2"></span>
+                    </center>
+
+                    <br>
+                    <input type="submit" id="compare" class="btn btn-primary btn-block" value="Сравнить тексты">
+                </form>
+            </div>
+            <div class="col-md-6 text-center">
+                    {%  if error %}
+                        <font color="red"><b>Не удалось обработать файлы :(</b></font> <br><br>
+                        Ошибка: <b>{{error}}</b>. <br><br>
+                        По сообщению выше можно понять, что не понравилось программе.<br><br>
+                        <i>Скорее всего проблема в кодировке</i>.<br><br>
+                        Необходимо загружать англоязычные тексты, либо файлы в кодировке <b>UTF-8</b>.
+                    {% elif filename1 and filename2 %}
+                        Файлы: <b>{{filename1}}</b> и <b>{{filename2}}</b>
+                        <br><br>
+                        Схожесть :
+                        {% if score < 25 %}
+                          <font color="red"><b>{{ score }}% </b></font> <br><br> <b><i>Маловато общего будет :(</i></b>
+                         {% elif score < 60 %}
+                          <font color="blue"><b>{{ score }}%</b></font> <br><br> <b><i>Что-то общее между ними явно есть.</i></b>
+                         {% else %}
+                            <font color="green"><b>{{ score }}% </b></font> <br><br> <b><i>Ну, прямо очень похожи!</i></b>
+                         {% endif %}
+                    {% endif %}
+            </div>
+        </div>
+        <br>
+        <hr width="100%">
+        <br>
+        <p style="font-size:18">
+            <br>
+        Количественная оценка схожести двух текстов (от 1 до 100%),
+            основанная на алгоритме <a href="https://ru.wikipedia.org/wiki/Алгоритм_шинглов">шинглов</a>.<br>
+        Используется длина шингла равная <b>2</b>.<br><br>
+        Проверенно работает с <b>англоязычными</b> текстами. Для других текстов должна быть кодировка <b>UTF-8</b>.
+    </p>
+
+        <p>
+      </div>
+</div>
+{% endblock %}
+
+
+{% block body_scripts %}
+        <script type="text/javascript">
+
+    $(document).ready(
+    (function() {
+        $('#compare').attr('disabled', 'disabled');
+    $('input:file').change(function() {
+        var empty = false;
+        console.log('yo');
+        $('form > input[required]').each(function() {
+            console.log('ss');
+            if ($(this).val() == '') {
+                empty = true;
+            }
+        });
+        if (empty) {
+            $('#compare').attr('disabled', 'disabled');
+        } else {
+            $('#compare').removeAttr('disabled');
+        }
+    });
+}))
+        </script>
+{% endblock %}

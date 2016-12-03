@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <center><b><h4>Финальное домашнее задание. Часть C (1).<br><br>Описание и код
+</h4></b></center><br>
+            Данное домашнее задание выполнено в виде веб-приложения и состоит из следующих четырех разделов:<br><br>
+            <ul>
+                <li>Определение языка текста</li>
+                <li>Оценка схожести двух текстов</li>
+                <li>Оценка естественности языка</li>
+                <li>Шифровка и дешифровка текста</li>
+            </ul>
+            <p>
+                <h3>1. Определение языка текста</h3>
+            Для распознавания языка текста используется алгоритм на основе частоты символов и ее сравнеиии «эталонной» частотой символов (букв) для разных языков.<br>
+	В настоящий момент программа умеет определять три языка:
+            <ul>
+                <li>Английский</li>
+                <li>Немецкий</li>
+                <li>Французский</li>
+            </ul>Для остальных языков программа либо выдаст сообщение о том, что такого языка не знает, либо наиболее похожий по ее мнению язык.
+            <br>Сейчас представлена лишь базовая реализация, чтобы показать возможности данного подхода. Для того, чтобы добавить новый язык, достаточно просто добавить эталонные частоты символов для него.
+
+            </p>
+            Реализация данного модуля на языке <b>Python</b>:<br><br>
+            <pre><code class="python"># -*- coding: UTF-8 -*-
+# файл final/utils/language.py
+eps = 5
+ENG = {"a" : 8.167, "b" : 1.492, "c" : 2.782, "d": 4.253, "e" : 12.702, "f" : 2.228,
+       "g" : 2.015, "h" : 6.094, "i" : 6.966, "j" : 0.153, "k" : 0.772, "l" : 4.025,
+        "m" : 2.406, "n" : 6.749, "o" : 7.507, "p" : 1.929, "q" : 0.095, "r" : 5.987,
+       "s" : 6.327, "t" : 9.056, "u" : 2.758, "v" : 0.978, "w" : 2.360, "x" : 0.150,
+       "y" : 1.974, "z" : 0.074
+       }
+FR = {"a" : 7.636, "b" : 0.901, "c" : 3.260, "d": 3.669, "e" : 14.715, "f" : 1.066,
+       "g" : 0.866, "h" : 0.737, "i" : 7.529, "j" : 0.613, "k" : 0.049, "l" : 5.456,
+       "m" : 2.968, "n" : 7.095, "o" : 5.598, "p" : 2.521, "q" : 1.362, "r" : 6.693,
+       "s" : 7.948, "t" : 7.244, "u" : 6.311, "v" : 1.838, "w" : 0.074, "x" : 0.427,
+       "y" : 0.128, "z" : 0.326}
+GR = {"a" : 6.516, "b" : 1.886, "c" : 2.732, "d": 5.076, "e" : 16.396, "f" : 1.656,
+       "g" : 3.009, "h" : 4.577, "i" : 6.550, "j" : 0.268, "k" : 1.417, "l" : 3.437,
+            "m" : 2.534, "n" : 9.776, "o" : 2.594, "p" : 0.670, "q" : 0.018, "r" : 7.003,
+       "s" : 7.273, "t" : 6.154, "u" : 4.166, "v" : 0.846, "w" : 1.921, "x" : 0.034,
+       "y" : 0.039, "z" : 1.134}
+
+Lang = [ENG, FR, GR]
+
+
+def define_language(text):
+	fr = {
+	    "a" : 0, "b" : 0, "c" : 0, "d": 0, "e" : 0, "f" : 0,
+   		"g" : 0, "h" : 0, "i" : 0, "j" : 0, "k" : 0, "l" : 0,
+    	"m" : 0, "n" : 0, "o" : 0, "p" : 0, "q" : 0, "r" : 0,
+   		"s" : 0, "t" : 0, "u" : 0, "v" : 0, "w" : 0, "x" : 0,
+   		"y" : 0, "z" : 0
+   	}
+
+	count = 0.0
+	for char in text:
+		if char.lower() >= "a" and char.lower() <= "z":
+			count += 1
+			fr[char.lower()] += 1
+
+	for i in xrange(ord("a"), ord("z")):
+		if fr[chr(i)] != 0:
+			fr[chr(i)] = fr[chr(i)] / count * 100
+		rr = 0
+
+	summ = [0, 0, 0]
+	for i in range(ord("a"), ord("z")):
+		for j in range(0, len(Lang)):
+			rr = abs(fr[chr(i)] - Lang[j][chr(i)])
+			summ[j] += rr
+
+	min = summ[0]
+	mini = 0
+	for i in range(1, len(summ)):
+		if summ[i] < min:
+			min = summ[i]
+			mini = i
+
+	if abs(summ[0] - summ[1]) < eps and abs(summ[1] - summ[2] < eps):
+		return -1
+	elif mini == 0:
+		return u"Английский"
+	elif mini == 1:
+		return u"Французский"
+	elif mini == 2:
+		return u"Немецкий"</code></pre>
+<br>
+       <p>
+           <h3>2. Оценка схожести двух текстов</h3>
+        Количественная оценка схожести двух текстов (от 1 до 100%),
+            основанная на алгоритме <a href="https://ru.wikipedia.org/wiki/Алгоритм_шинглов">шинглов</a>.
+        Используется длина шингла равная <b>2</b>.<br><br>
+        Проверенно работает с <b>англоязычными</b> текстами. Для других текстов должна быть кодировка <b>UTF-8</b>.
+           <br><br>
+            Реализация на языке <b>Python</b>:
+            <br><br><pre><code># -*- coding: UTF-8 -*-
+
+import binascii
+
+STOP_SYMBOLS = '.,!?:;-\n\r()'
+STOP_WORDS = (
+    u'это', u'как', u'так',
+    u'и', u'в', u'над',
+    u'к', u'до', u'не',
+    u'на', u'но', u'за',
+    u'то', u'с', u'ли',
+    u'а', u'во', u'от',
+    u'со', u'для', u'о',
+    u'же', u'ну', u'вы',
+    u'бы', u'что', u'кто',
+    u'он', u'она'
+)
+
+
+def canonize(source):
+    return [x for x in [y.strip(STOP_SYMBOLS) for y in source.lower().split()] if x and (x not in STOP_WORDS)]
+
+
+def gen_shingle(source, shingle_len=2):
+    shingle_len = shingle_len
+    out = []
+    if len(source) - (shingle_len - 1) < 1:
+        return source
+    for i in range(len(source) - (shingle_len - 1)):
+        out.append(binascii.crc32(' '.join( [x for x in source[i:i + shingle_len]] ).encode('utf-8')))
+    return out
+
+
+def compare(source1, source2):
+    same = 0
+    for i in range(len(source1)):
+        if source1[i] in source2:
+            same = same + 1
+    return same * 2 / float(len(source1) + len(source2)) * 100
+
+
+def similarity_score(text1, text2):
+    cmp1 = gen_shingle(canonize(text1))
+    cmp2 = gen_shingle(canonize(text2))
+    return compare(cmp1, cmp2)</code></pre>
+            </p>
+            <br>
+       <p>
+           <h3>3. Оценка естественности языка</h3>
+            Алгоритм основан на законе Ципфа. Более подробную информацию об этом законе можно найти <a href="https://ru.wikipedia.org/wiki/Закон_Ципфа">здесь</a>.
+            Предполагается, что для естественного языка он обязательно выполняется.
+            <br><br>
+            Реализация на языке <b>Python</b>:
+            <pre><code># -*- coding: UTF-8 -*-
+
+STOPS = (',', '.', '!', '?', ':', ';',)
+
+
+def natural_language_coeff(text):
+    freq = {}
+    words = text.split(' ')
+
+    for word in words:
+        if len(word) == 0:
+            continue
+        if len(word) == 1:
+            if word not in STOPS:
+                if word in freq:
+                    freq[word] += 1
+                else:
+                    freq[word] = 1
+
+        if word[-1] in STOPS:
+            if word[:-1] in freq:
+                freq[word[:-1]] += 1
+            else:
+                freq[word[:-1]] = 1
+        elif word in freq:
+            freq[word] += 1
+        else:
+            freq[word] = 1
+    fr = sorted(freq.items(), key=lambda(k,v): v, reverse=True)
+    summ = 0
+    count = fr[0][1]
+    for i in range(1, len(fr)):
+        summ += abs(float(fr[0][1]) / (i + 1) - fr[i][1])
+        count += fr[i][1]
+
+    return 100 - (summ / count) * 100</code></pre>
+       </p>
+            <br>
+       <p>
+           <h3>4. Шифрование и дешифрование текста</h3>
+            Алгоритм основан на шифре Виженера – шифровании с использованием ключевого слова. Более подробную информацию о данном шифре можно найти <a href="https://ru.wikipedia.org/wiki/Шифр_Виженера">здесь</a>.
+            <br><br>Реализовано как шифрование (<b>encode_text</b>), так и дешифрование текста (<b>decode_text</b>). Шифрование и дешифрование корректно работает только с английским языком.
+        <br><br>Реализация данного модуля на языке <b>Python</b>:<br><br>
+            <pre><code># -*- coding: UTF-8 -*-
+
+# forming dictionary code
+def form_dict():
+    dictionary = {}
+    for i in range(0, 127):
+        dictionary[i] = chr(i)
+    return dictionary
+
+
+# coding words to letters
+def encode_val(word):
+    list_code = []
+    lent = len(word)
+
+    d = form_dict()
+
+    for w in range(lent):
+        for value in d:
+            if word[w] == d[value]:
+               list_code.append(value)
+    return list_code
+
+
+# comparing two dicts
+def comparator(value, key):
+    len_key = len(key)
+    dic = {}
+    iter = 0
+    full = 0
+    for i in value:
+        dic[full] = [i,key[iter]]
+        full = full + 1
+        iter = iter +1
+        if (iter >= len_key):
+            iter = 0
+
+    return dic
+
+# finish full encode
+def full_encode(value, key):
+    dic = comparator(value, key)
+
+    lis = []
+    d = form_dict()
+
+    for v in dic:
+        go = (dic[v][0]+dic[v][1]) % len(d)
+        lis.append(go)
+    return lis
+
+# DECODER
+
+# decode to numeric values
+def full_decode(value, key):
+
+    dic = comparator(value, key)
+    d = form_dict()
+    lis = []
+    for v in dic:
+        go = (dic[v][0] - dic[v][1] + len(d)) % len(d)
+        lis.append(go)
+    return lis
+
+
+def decode_val(list_in):
+    list_code = []
+    lent = len(list_in)
+
+    d = form_dict()
+
+    for i in range(lent):
+        for value in d:
+            if list_in[i] == value:
+                list_code.append(d[value])
+    return list_code
+
+
+def encode_text(text, key):
+    key_encoded = encode_val(key)
+    value_encoded = encode_val(text)
+    shifre = full_encode(value_encoded, key_encoded)
+    return ''.join(decode_val(shifre))
+
+
+def decode_text(text, key):
+    key_encoded = encode_val(key)
+    text = list(text)
+    decoded = full_decode(encode_val(text), key_encoded)
+    return ''.join(decode_val(decoded)) </code></pre>
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}

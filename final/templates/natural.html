@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+    <div class="jumbotron">
+    <center><h2>Оценка естественности языка</h2></center>
+    <br><br>
+        <div class="row vertical-align">
+            <div class="col-md-6">
+                <center>Выберите текстовый файл:</center>
+                <br>
+                <form action="{% url 'natural' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label class="btn btn-primary btn-block" for="my-file-selector">Загрузить файл</label>
+                    <input id="my-file-selector" type="file" accept="text/plain" name="file" style="display:none;"
+                           onchange="$('#upload-file-info').html($(this).val().split('\\').slice(-1)[0]);" required/>
+                    <br>
+                    <center>
+                    <span class='label label-info' id="upload-file-info"></span>
+                        </center>
+                    <br><br>
+                    <input type="submit" class="btn btn-primary btn-block" value="Определить язык"/>
+                </form>
+            </div>
+            <div class="col-md-6 text-center">
+                {% if error %}
+                <font color="red"><b>Не удалось обработать файл :(</b></font> <br><br>
+                        Ошибка: <b>{{error}}</b>. <br><br>
+                        По сообщению выше можно понять, что не понравилось программе.<br><br>
+                        <i>Скорее всего проблема в кодировке</i>.<br><br>
+                        Необходимо загружать англоязычные тексты, либо файлы в кодировке <b>UTF-8</b>.
+                {% elif filename %}
+                    Файл: <b>{{filename}}</b>
+                    <br><br>
+                        Естественность языка :
+                        {% if score < 25 %}
+                          <font color="red"><b>{{ score }}% </b></font> <br><br> <b><i>Выглядит не особо естественно. Нейронная сеть писала?</i></b>
+                         {% elif score < 60 %}
+                          <font color="blue"><b>{{ score }}%</b></font> <br><br> <b><i>Не так уж плохо!</i></b>
+                         {% else %}
+                            <font color="green"><b>{{ score }}% </b></font> <br><br> <b><i>Очень естественно. Специально подгоняли?</i></b>
+                         {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <hr width="100%">
+        <br>
+        <p style="font-size:18">
+            <br>
+        Количественная оценка естественности языка (от 1 до 100%),
+            основанная на <a href="https://ru.wikipedia.org/wiki/Закон_Ципфа">законе Ципфа</a>.</p>
+
+      </div>
+</div>
+{% endblock %}
+
+
+{% block body_scripts %}
+        <script type="text/javascript">
+            $(document).ready(
+            function(){
+                $('input:submit').attr('disabled', true);
+                $('input:file').change(
+                    function(){
+                        if ($(this).val()) {
+                            $('input:submit').attr('disabled', false);
+                        }
+                    }
+                    );
+            });
+        </script>
+{% endblock %}

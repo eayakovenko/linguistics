@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+
+
+      <div class="jumbotron">
+        <h2>Определение языка текста</h2>
+        <p style="font-size:18">
+            <br>
+        В настоящий момент программа умеет различать следующие языки: </p>
+            <ul>
+          <li><b>Английский</b></li>
+          <li><b>Немецкий</b></li>
+          <li><b>Французский</b></li>
+          </ul>
+         <p style="font-size:18">Алгоритм определения языка основан на общедоступной статистике встречаемости латинских букв в данных языках.</p>
+
+        <p>
+          <a class="btn btn-lg btn-primary" href="{% url 'language' %}" role="button">Определить язык</a>
+        </p>
+      </div>
+
+    <div class="jumbotron">
+        <h2>Оценка схожести двух текстов</h2>
+        <p style="font-size:18">
+            <br>
+        Количественная оценка схожести двух текстов (от 1 до 100%),
+            основанная на алгоритме <a href="https://ru.wikipedia.org/wiki/Алгоритм_шинглов">шинглов</a>.</p>
+
+        <p>
+          <a class="btn btn-lg btn-primary" href="{% url 'similarity' %}" role="button">Сравнить тексты</a>
+        </p>
+      </div>
+
+      <div class="jumbotron">
+        <h2>Оценка естественности языка</h2>
+        <p style="font-size:18">
+            <br>
+        Количественная оценка естественности языка (от 1 до 100%),
+            основанная на <a href="https://ru.wikipedia.org/wiki/Закон_Ципфа">законе Ципфа</a>.</p>
+
+        <p>
+          <a class="btn btn-lg btn-primary" href="{% url 'natural' %}" role="button">Оценить естественность языка</a>
+        </p>
+      </div>
+
+      <div class="jumbotron">
+        <h2>Шифровка и дешифровка текста</h2>
+        <p style="font-size:18">
+            <br>
+        Шифровка и дешифровка текста с использованием ключевого слова,
+            основанная на <a href="https://ru.wikipedia.org/wiki/Шифр_Виженера">шифре Виженера</a>.</p>
+
+        <p>
+          <a class="btn btn-lg btn-primary" href="{% url 'encoding' %}" role="button">Шифровать / Дешифровать текст</a>
+        </p>
+      </div>
+
+    </div>
+{% endblock %}

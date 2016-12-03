@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <center><b><h4>Финальное домашнее задание. Часть C (1).
+<br><br>Тестирование</h4></b></center><br>
+            Данное домашнее задание выполнено в виде веб-приложения и состоит из следующих четырех разделов:<br><br>
+            <ul>
+                <li>Определение языка текста</li>
+                <li>Оценка схожести двух текстов</li>
+                <li>Оценка естественности языка</li>
+                <li>Шифровка и дешифровка текста</li>
+            </ul>
+            На самом деле для тестирования каждого из указанных ниже случаев использовалось много разных текстов, но
+            в для каждого случае будет приведен в пример лишь один текст.
+                <h4>1. Определение языка текста</h4>
+                1. <u>Немецкий</u> : <b><a href="http://germanstories.vcu.edu/droste/juden.html">Die Judenbuche</a></b> (Annette von Droste-Hülshoff).
+                <i>Определяется верно.</i><br>
+                2. <u>Английский</u>: <b><a href="http://www.world-english.org/conrad.doc">The Idiots</a></b> (Joseph Conrad).
+                <i>Определяется верно.</i><br>
+                3. <u>Французский</u>: <b><a href="http://maupassant.free.fr/textes/vendre.html">A vendre</a></b> (Guy de Maupassant).
+                <i>Определяется верно.</i><br>
+            Собственно, каждый может сам протестировать руками <a href="{% url 'language' %}">здесь</a>.<br><br>
+            <h4>2. Оценка схожести двух текстов</h4>
+            1. <a href="https://www.englishclub.com/reading/story-dark-brown-dog.htm">A Dark Brown Dog</a> (Stephen Crane)
+            и <a href="https://www.englishclub.com/reading/story-haircut.htm">Haircut</a> (Ring Lardner). Результат: <b>10.56%</b><br>
+            2. <a href="https://www.englishclub.com/reading/story-chapel.htm">The Chapel</a> (Josef Essberger)
+            и <a href="https://www.englishclub.com/reading/story-dark-brown-dog.htm">A Dark Brown Dog</a> (Stephen Crane). Результат: <b>15.56%</b><br>
+            3. <a href="https://www.englishclub.com/reading/story-chapel.htm">The Chapel</a> (Josef Essberger)
+            и он же в сокращенной версии (удалено много абзацев в разных частях текста). Результат: <b>69.11%</b><br>
+            Собственно, каждый может сам протестировать руками <a href="{% url 'similarity' %}">здесь</a>.<br>
+            <br>
+            <h4>3. Оценка естественности языка</h4>
+            1. <a href="https://www.englishclub.com/reading/story-dark-brown-dog.htm">A Dark Brown Dog</a> (Stephen Crane). Результат: <b>53.69%</b><br>
+            2. <a href="https://www.englishclub.com/reading/story-haircut.htm">Haircut</a> (Ring Lardner). Результат: <b>39.08%%</b><br>
+            3. <a href="https://www.englishclub.com/reading/story-chapel.htm">The Chapel</a> (Josef Essberger). Результат: <b>42.44%</b><br>
+            4. <a href="http://germanstories.vcu.edu/droste/juden.html">Die Judenbuche</a></b> (Annette von Droste-Hülshoff). Результат: <b>28.93%</b><br>
+            5. <a href="http://www.world-english.org/conrad.doc">The Idiots</a></b> (Joseph Conrad). Результат: <b>58.77%</b><br>
+            6. <a href="http://maupassant.free.fr/textes/vendre.html">A vendre</a></b> (Guy de Maupassant). Результат: <b>26.72%</b><br>
+            7. Случайный текст, сгенерированный с помощью <a href="http://randomtextgenerator.com">этого сайта</a>. Результат: <b>15.95%</b><br>
+            Собственно, каждый может сам протестировать руками <a href="{% url 'natural' %}">здесь</a>.<br>
+            <br>
+            <h4>4. Шифровка и дешифровка текста</h4>
+            1. Короткий <i>текст</i> <b>"This is some really secret information! My email: agent@fbi.com , password : toptopsecret"</b> и <i>ключ</i> <b>"stop bad boys"</b><br>
+            2. Большой случайно сгенерированный текст. С числовым ключом. <br>
+            Собственно, каждый может сам протестировать руками <a href="{% url 'encoding' %}">здесь</a>.
+
+            <br><br>
+            <h4>Общие замечания</h4>
+            Иногда из-за проблем с обработкой текста средствами Python 2.7 могут возникать ошибки, как правило,
+            они связаны с тем, что текст не в формате UTF-8 или встречаются неизвестные символы. В каждом случае ошибки
+            будет выдана ошибка интерепретатора Python из-за которой все и сломалось. Все тексты, упомянутые выше, можно скачать <a href="https://www.dropbox.com/s/mw5jqlqzivg6y3m/testtexts.zip?dl=0">архивом</a>.
+        </div>
+    </div>
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}

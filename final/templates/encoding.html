@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+    <div class="jumbotron">
+
+    {% if error %}
+
+        <center>Ошибка: <b>{{error}}</b>
+        <br><br>
+        Программа работает с английским языком, скорее всего проблема именно в этом.
+        <br><br>
+        По ошибке выше можно понять, в чем проблема.
+
+        </center>
+
+        <hr widht="100%">
+        <br>
+    {% endif %}
+    <center><h2>Шифрование текста</h2></center>
+    <br>
+    {% if decoded_text %}
+        <center>
+        <b><h4><font color="green">Результат дешифрования</font></h4></b> для ключа <b><i>{{key}}</i></b>
+        </center>
+
+    {% else %}
+    <center>Введите текст и ключ для шифрования:</center>
+    {% endif %}
+    <br>
+    <form action="{% url 'encoding' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="etext">Текст</label>
+        <textarea id="etext" name="text" class="form-control" rows="3" placeholder="Текст">{% if encoding_text %}{{encoding_text}}{% elif decoded_text %}{{decoded_text}}{% endif %}</textarea>
+        <br>
+        <label for="ekey">Ключ</label>
+        <input type="text" id="ekey" class="form-control" name="key" placeholder="Ключевое слово (фраза)">
+        <br><br>
+        <center><input type="submit" id="encode" class="btn btn-primary" value="Шифровать"/></center>
+    </form>
+    <hr width="100%">
+        <center><h2>Дешифрование текста</h2></center>
+        <br>
+        {% if encoded_text %}
+        <center>
+        <b><h4><font color="green">Результат шифрования</font></h4></b> для ключа <b><i>{{key}}</i></b>
+        </center>
+        {% else %}
+            <center>Введите текст и ключ для дешифрования:</center>
+        {% endif %}
+                <br>
+                <form action="{% url 'decoding' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="dtext">Текст</label>
+                    <textarea id="dtext" name="text" class="form-control" rows="3" placeholder="Текст">{% if decoding_text %}{{decoding_text}}{% elif encoded_text %}{{encoded_text}}{% endif %}</textarea>
+                    <br>
+                    <label for="dkey">Ключ</label>
+                    <input type="text" id="dkey" class="form-control" name="key" placeholder="Ключевое слово (фраза)">
+                    <br><br>
+                    <center><input type="submit" id="decode" class="btn btn-primary" value="Дешифровать"/></center>
+                </form>
+            <hr width="100%">
+            <br>
+            <p style="font-size:18">
+                <br>
+            Шифровка и дешифровка текста с использованием ключевого слова,
+                основанная на <a href="https://ru.wikipedia.org/wiki/Шифр_Виженера">шифре Виженера</a>.</p>
+            Работает корректно только для англоязычных текстов и ключей.
+      </div>
+</div>
+{% endblock %}
+
+
+{% block body_scripts %}
+        <script type="text/javascript">
+        $('#ekey').on('keyup keypress', function(e) {
+          var keyCode = e.keyCode || e.which;
+          if (keyCode === 13) {
+            e.preventDefault();
+            return false;
+          }
+        });
+        $('#dkey').on('keyup keypress', function(e) {
+          var keyCode = e.keyCode || e.which;
+          if (keyCode === 13) {
+            e.preventDefault();
+            return false;
+          }
+        });
+
+            $(document).ready(
+            function(){
+                $('#encode').attr('disabled', true);
+                $('#decode').attr('disabled', true);
+                $('#etext').keyup(
+                    function(){
+                        if ($('#etext').val() && $('#ekey').val()) {
+                          $('#encode').attr('disabled', false);
+                        }
+                        else {
+                          $('#encode').attr('disabled', true);
+                        }
+                    }
+                    );
+                $('#ekey').keyup(
+                    function(){
+                        if ($('#etext').val() && $('#ekey').val()) {
+                          $('#encode').attr('disabled', false);
+                        }
+                        else {
+                            $('#encode').attr('disabled', true);
+                        }
+                    }
+                    );
+                $('#dtext').keyup(
+                    function(){
+                        if ($('#dtext').val() && $('#dkey').val()) {
+                          $('#decode').attr('disabled', false);
+                        }
+                        else {
+                          $('#decode').attr('disabled', true);
+                        }
+                    }
+                    );
+                $('#dkey').keyup(
+                    function(){
+                        if ($('#dtext').val() && $('#dkey').val()) {
+                          $('#decode').attr('disabled', false);
+                        }
+                        else {
+                            $('#decode').attr('disabled', true);
+                        }
+                    }
+                    );
+            });
+        </script>
+{% endblock %}
